@@ -24,5 +24,13 @@ app.dependency_overrides[get_db] = override_get_db
 
 
 @pytest.fixture
-def client():
+def test_client():
     return TestClient(app)
+
+@pytest.fixture
+def test_user(test_client):
+    """Helper fixture to create a user before tests"""
+    payload = {"name": "John Doe", "email": "john@example.com"}
+    response = test_client.post("/users/", json=payload)
+    assert response.status_code == 200
+    return response.json()
