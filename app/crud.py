@@ -1,0 +1,20 @@
+from sqlalchemy.orm import Session
+from app.models import User
+from app.schema import UserCreate, UserResponse
+
+def get_all_users_data(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(User).offset(skip).limit(limit).all()
+
+def create_user(db:Session, user:UserCreate ) -> User:
+    user = User(name = user.name, email = user.email)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def get_user(db: Session, user_id: int) -> UserResponse | None:
+    user_data = db.query(User).filter(User.id == user_id).first()
+
+    return user_data
+
